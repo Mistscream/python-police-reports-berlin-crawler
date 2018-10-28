@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 scrapy = "*"
 pymongo = "*"
+"pypiwin32" = {version = "*", sys_platform = "== 'win32'"}
+
 
 [dev-packages]
 
