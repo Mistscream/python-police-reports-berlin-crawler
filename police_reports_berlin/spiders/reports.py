@@ -14,4 +14,11 @@ class ReportsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse_archive)
 
     def parse_archive(self, response):
-        print('parsing archive')
+
+        print(response.url)
+
+        for report_link in response.css('.list-autoteaser > li a'):
+            url = self.base_url + report_link.css('::attr(href)').extract_first()
+            print(url)
+
+
