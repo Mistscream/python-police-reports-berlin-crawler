@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 
+from police_reports_berlin.items import PoliceReportBerlinItem
+
 
 class ReportsSpider(scrapy.Spider):
     name = 'reports'
@@ -14,11 +16,20 @@ class ReportsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse_archive)
 
     def parse_archive(self, response):
-
-        print(response.url)
-
         for report_link in response.css('.list-autoteaser > li a'):
             url = self.base_url + report_link.css('::attr(href)').extract_first()
-            print(url)
 
+            yield scrapy.Request(url=url, callback=self.parse_report)
 
+    def parse_report(self, response):
+        texts = None
+        for p in response.css('.column-content .textile p'):
+            texts = p.css('::text').extract()
+            texts = [text.replace('\n', '').strip() for text in texts]
+            texts = list(filter(None, texts))
+
+        report = PoliceReportBerlinItem(
+            text='. '.join(texts)
+        )
+
+        yield report
