@@ -4,6 +4,7 @@ import scrapy
 from police_reports_berlin.items import PoliceReportBerlinItem
 
 
+# noinspection PyMethodMayBeStatic
 class ReportsSpider(scrapy.Spider):
     name = 'reports'
     base_url = 'https://www.berlin.de'
@@ -29,6 +30,8 @@ class ReportsSpider(scrapy.Spider):
             texts = list(filter(None, texts))
 
         report = PoliceReportBerlinItem(
+            raw=response.text,
+            url=response.url,
             text='. '.join(texts)
         )
 
