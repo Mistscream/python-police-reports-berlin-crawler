@@ -19,9 +19,9 @@ class MongoPipeline(object):
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            mongo_uri=crawler.settings.get('MONGO_URI'),
-            mongo_db=crawler.settings.get('MONGO_DATABASE'),
-            mongo_collection=crawler.settings.get('MONGO_COLLECTION'),
+            mongo_uri=crawler.settings.get('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_URI'),
+            mongo_db=crawler.settings.get('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DATABASE'),
+            mongo_collection=crawler.settings.get('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_COLLECTION')
         )
 
     def open_spider(self, spider):

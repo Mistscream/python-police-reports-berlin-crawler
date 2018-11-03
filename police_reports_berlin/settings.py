@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+from os import getenv
+from dotenv import load_dotenv
 
+load_dotenv()
 # Scrapy settings for police_reports_berlin project
 #
 # For simplicity, this file contains only settings considered important or
@@ -14,6 +17,10 @@ BOT_NAME = 'police_reports_berlin'
 SPIDER_MODULES = ['police_reports_berlin.spiders']
 NEWSPIDER_MODULE = 'police_reports_berlin.spiders'
 LOG_LEVEL = 'ERROR'
+
+SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_URI = getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_URI')
+SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DATABASE = getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DATABASE')
+SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_COLLECTION = getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_COLLECTION')
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'police_reports_berlin (+http://www.yourdomain.com)'
@@ -65,7 +72,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-#    'police_reports_berlin.pipelines.MongoPipeline': 300
+    'police_reports_berlin.pipelines.MongoPipeline': 300
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -1,1 +1,4 @@
 .idea
+.env
+build
+project.egg-info
