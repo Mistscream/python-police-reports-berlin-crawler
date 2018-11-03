@@ -38,6 +38,8 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         if self.mongo_enabled:
-            self.db[self.mongo_collection].insert_one(dict(item))
+            # Only crawl if url was not crawled yet
+            if not self.db[self.mongo_collection].find_one({'url': item['url']}):
+                self.db[self.mongo_collection].insert_one(dict(item))
             
         return item
