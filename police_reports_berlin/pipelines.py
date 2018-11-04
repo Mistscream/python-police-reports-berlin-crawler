@@ -63,3 +63,5 @@ class MongoPipeline(object):
                 )
 
                 logger.info('Updated existing document: %s' % doc['_id'])
+
+        return item

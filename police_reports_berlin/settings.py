@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from os import getenv
 
-from dotenv import load_dotenv
-
-load_dotenv()
 # Scrapy settings for police_reports_berlin project
 #
 # For simplicity, this file contains only settings considered important or
@@ -19,12 +16,12 @@ SPIDER_MODULES = ['police_reports_berlin.spiders']
 NEWSPIDER_MODULE = 'police_reports_berlin.spiders'
 LOG_LEVEL = 'INFO'
 
-SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_ENABLED = bool(int(getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_ENABLED')))
+SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_ENABLED = bool(int(getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_ENABLED', 0)))
 SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_URI = getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_URI')
 SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DATABASE = getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DATABASE')
 SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_COLLECTION = getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_COLLECTION')
 SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DROP_COLLECTION = bool(
-    int(getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DROP_COLLECTION'))
+    int(getenv('SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DROP_COLLECTION', 0))
 )
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
