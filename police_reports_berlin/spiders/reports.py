@@ -34,6 +34,10 @@ class ReportsSpider(scrapy.Spider):
                 meta={'timestamp': timestamp, 'category': category}
             )
 
+        next_page_url = self.base_url + response.css('.html5-nav > div > ul > .pager-item-next > a::attr(href)').extract_first()
+        print(next_page_url)
+        yield scrapy.Request(url = next_page_url, callback=self.parse_archive)
+
     def parse_report(self, response):
         timestamp = response.meta['timestamp']
         timestamp = timestamp.replace('Uhr', '').strip()
