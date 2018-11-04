@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+import logging
+from datetime import datetime
+
 import scrapy
 
 from police_reports_berlin.items import PoliceReportBerlinItem
+
+logger = logging.getLogger()
 
 
 # noinspection PyMethodMayBeStatic
@@ -17,12 +22,24 @@ class ReportsSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse_archive)
 
     def parse_archive(self, response):
-        for report_link in response.css('.list-autoteaser > li a'):
-            url = self.base_url + report_link.css('::attr(href)').extract_first()
+        for report in response.css('.list-autoteaser > li.row-fluid'):
+            timestamp = report.css('.date::text').extract_first()
+            category = report.css('.category::text').extract_first()
 
-            yield scrapy.Request(url=url, callback=self.parse_report)
+            url = self.base_url + report.css('a::attr(href)').extract_first()
+
+            yield scrapy.Request(
+                url=url,
+                callback=self.parse_report,
+                meta={'timestamp': timestamp, 'category': category}
+            )
 
     def parse_report(self, response):
+        timestamp = response.meta['timestamp']
+        timestamp = timestamp.replace('Uhr', '').strip()
+        timestamp = datetime.strptime(timestamp, '%d.%m.%Y %H:%M')
+        category = response.meta['category']
+
         texts = None
         for p in response.css('.column-content .textile p'):
             texts = p.css('::text').extract()
@@ -30,6 +47,8 @@ class ReportsSpider(scrapy.Spider):
             texts = list(filter(None, texts))
 
         report = PoliceReportBerlinItem(
+            category=category,
+            timestamp=timestamp,
             raw=response.text,
             url=response.url,
             text='. '.join(texts)

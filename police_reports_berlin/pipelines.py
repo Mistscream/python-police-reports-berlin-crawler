@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from datetime import datetime
 
 # Define your item pipelines here
@@ -7,6 +8,8 @@ from datetime import datetime
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
+
+logger = logging.getLogger()
 
 
 class MongoPipeline(object):
@@ -37,7 +40,7 @@ class MongoPipeline(object):
 
             if self.mongo_drop_collection:
                 self.db[self.mongo_collection].drop()
-                print('Dropped collection')
+                logger.info('Dropped collection')
 
     def close_spider(self, spider):
         if self.mongo_enabled:
@@ -52,11 +55,11 @@ class MongoPipeline(object):
                 item['created'] = datetime.now()
                 self.db[self.mongo_collection].insert_one(dict(item))
 
-                print('Inserted new document')
+                logger.info('Inserted new document')
             else:
                 self.db[self.mongo_collection].update_one(
                     {'_id': doc['_id']},
-                    {'$set':  dict(item)}
-                 )
+                    {'$set': dict(item)}
+                )
 
-                print('Updated existing document: %s' % doc['_id'])
+                logger.info('Updated existing document: %s' % doc['_id'])
