@@ -10,7 +10,8 @@ import scrapy
 
 class PoliceReportBerlinItem(scrapy.Item):
     # define the fields for your item here like:
-
+    created = scrapy.Field()
+    updated = scrapy.Field()
     raw = scrapy.Field()
     text = scrapy.Field()
     url = scrapy.Field()
