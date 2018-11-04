@@ -54,9 +54,9 @@ class MongoPipeline(object):
 
                 print('Inserted new document')
             else:
-                # self.db[self.mongo_drop_collection].update_one(
-                #    {'_id': doc['_id']},
-                #    {'$set': dict(item)}
-                # )
+                self.db[self.mongo_collection].update_one(
+                    {'_id': doc['_id']},
+                    {'$set':  dict(item)}
+                 )
 
-                print('Updated existing document')
+                print('Updated existing document: %s' % doc['_id'])
