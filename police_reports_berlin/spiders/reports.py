@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 
 import scrapy
+from functional import seq
 
 from police_reports_berlin.items import PoliceReportBerlinItem
 
@@ -34,9 +35,10 @@ class ReportsSpider(scrapy.Spider):
                 meta={'timestamp': timestamp, 'category': category}
             )
 
-        next_page_url = self.base_url + response.css(
-            '.html5-nav > div > ul > .pager-item-next > a::attr(href)').extract_first()
+        next_page_url = response.css('.html5-nav > div > ul > .pager-item-next > a::attr(href)').extract_first()
+
         if next_page_url:
+            next_page_url = self.base_url + next_page_url
             yield scrapy.Request(url=next_page_url, callback=self.parse_archive)
 
     def parse_report(self, response):
@@ -45,18 +47,26 @@ class ReportsSpider(scrapy.Spider):
         timestamp = datetime.strptime(timestamp, '%d.%m.%Y %H:%M')
         category = response.meta['category']
 
-        texts = None
-        for p in response.css('.column-content .textile p'):
-            texts = p.css('::text').extract()
-            texts = [text.replace('\n', '').strip() for text in texts]
-            texts = list(filter(None, texts))
+        snippets = seq(
+            response.css(
+                '.column-content > .article > .body .polizeimeldung::text,' +
+                '.column-content > .article > .body p::text,' +
+                '.column-content > .article > .body strong::text'
+            ).extract()
+        ) \
+            .map(lambda snippet: snippet.replace('\n', '')) \
+            .map(lambda snippet: snippet.strip()) \
+            .filter(None) \
+            .to_list()
+
+        text = '. '.join(snippets)
 
         report = PoliceReportBerlinItem(
             category=category,
             timestamp=timestamp,
-            raw=response.text,
+            # raw=response.text,
             url=response.url,
-            text='. '.join(texts)
+            text=text
         )
 
         yield report
