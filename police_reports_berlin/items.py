@@ -16,4 +16,5 @@ class PoliceReportBerlinItem(scrapy.Item):
     category = scrapy.Field()
     raw = scrapy.Field()
     text = scrapy.Field()
+    text_pre_processed = scrapy.Field()
     url = scrapy.Field()

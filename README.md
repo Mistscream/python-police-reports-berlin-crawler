@@ -7,6 +7,8 @@ You can install all requirements with the following command:
 
 ```bash
 pipenv install
+pipenv shell
+python -m spacy download de
 ```
 
 If you want to crawl locally create a .env file in the root-directory with the following content:
@@ -16,6 +18,7 @@ SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_ENABLED=0
 SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_URI=
 SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DATABASE=
 SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_COLLECTION=
+SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DROP_COLLECTION=0
 ```
 
 ## Run 

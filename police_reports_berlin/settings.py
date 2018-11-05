@@ -74,6 +74,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
+    'police_reports_berlin.pipelines.PreProcessPipeline': 200,
     'police_reports_berlin.pipelines.MongoPipeline': 300
 }
 
