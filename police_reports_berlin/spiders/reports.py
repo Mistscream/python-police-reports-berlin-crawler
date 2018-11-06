@@ -64,7 +64,8 @@ class ReportsSpider(scrapy.Spider):
         report = PoliceReportBerlinItem(
             category=category,
             timestamp=timestamp,
-            # raw=response.text,
+            titel=titel,
+            #raw=response.text,
             url=response.url,
             text=text
         )
