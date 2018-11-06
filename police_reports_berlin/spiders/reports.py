@@ -47,6 +47,9 @@ class ReportsSpider(scrapy.Spider):
         timestamp = datetime.strptime(timestamp, '%d.%m.%Y %H:%M')
         category = response.meta['category']
 
+        title = response.css('.html5-header > .title::text').extract_first()
+        # print(title)
+
         snippets = seq(
             response.css(
                 '.column-content > .article > .body .polizeimeldung::text,' +
@@ -64,7 +67,7 @@ class ReportsSpider(scrapy.Spider):
         report = PoliceReportBerlinItem(
             category=category,
             timestamp=timestamp,
-            titel=titel,
+            title=title,
             #raw=response.text,
             url=response.url,
             text=text

@@ -18,3 +18,4 @@ class PoliceReportBerlinItem(scrapy.Item):
     text = scrapy.Field()
     text_pre_processed = scrapy.Field()
     url = scrapy.Field()
+    title = scrapy.Field()
