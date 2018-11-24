@@ -14,8 +14,12 @@ class PoliceReportBerlinItem(scrapy.Item):
     updated = scrapy.Field()
     timestamp = scrapy.Field()
     category = scrapy.Field()
-    raw = scrapy.Field()
     text = scrapy.Field()
-    text_pre_processed = scrapy.Field()
+
+    text_pre_processed_v1 = scrapy.Field()
+    text_pre_processed_v2 = scrapy.Field()
+    text_pre_processed_v3 = scrapy.Field()
+    text_pre_processed_v4 = scrapy.Field()
+
     url = scrapy.Field()
     title = scrapy.Field()

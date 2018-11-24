@@ -3,8 +3,7 @@ import logging
 from datetime import datetime
 
 import scrapy
-from functional import seq
-
+from toolz.curried import pipe, map, filter
 from police_reports_berlin.items import PoliceReportBerlinItem
 
 logger = logging.getLogger()
@@ -48,19 +47,20 @@ class ReportsSpider(scrapy.Spider):
         category = response.meta['category']
 
         title = response.css('.html5-header > .title::text').extract_first()
-        # print(title)
 
-        snippets = seq(
+        snippets = pipe(
             response.css(
                 '.column-content > .article > .body .polizeimeldung::text,' +
                 '.column-content > .article > .body p::text,' +
                 '.column-content > .article > .body strong::text'
-            ).extract()
-        ) \
-            .map(lambda snippet: snippet.replace('\n', '')) \
-            .map(lambda snippet: snippet.strip()) \
-            .filter(None) \
-            .to_list()
+            ).extract(),
+
+            map(lambda snippet: snippet.replace('\n', '')),
+            map(lambda snippet: snippet.strip()),
+            filter(None),
+
+            list
+        )
 
         text = '. '.join(snippets)
 
@@ -68,7 +68,6 @@ class ReportsSpider(scrapy.Spider):
             category=category,
             timestamp=timestamp,
             title=title,
-            #raw=response.text,
             url=response.url,
             text=text
         )

@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# import spacy
+
 import logging
-from datetime import datetime
-# from functional import seq
 import pymongo
+from datetime import datetime
+from spacy_preprocessing.preprocess import Preprocess
 
 logger = logging.getLogger()
-#nlp = spacy.load('de')
 
 
 # Define your item pipelines here
@@ -72,6 +71,8 @@ class MongoPipeline(object):
 
 
 class PreProcessPipeline(object):
+    preprocessor = None
+
     def __init__(self):
         pass
 
@@ -86,9 +87,11 @@ class PreProcessPipeline(object):
         pass
 
     def process_item(self, item, spider):
-        # item['text_pre_processed'] = seq([token for token in nlp(item['text'])]) \
-        #    .map(lambda token: token.text) \
-        #    .filter(lambda text: text not in ['.', ':', ',']) \
-        #     .to_list()
+        preprocess = Preprocess(item['text'])
+
+        item['text_pre_processed_v1'] = preprocess.preprocess(sentence_split=False, with_pos=False)
+        item['text_pre_processed_v2'] = preprocess.preprocess(sentence_split=True, with_pos=False)
+        item['text_pre_processed_v3'] = preprocess.preprocess(sentence_split=False, with_pos=True)
+        item['text_pre_processed_v4'] = preprocess.preprocess(sentence_split=True, with_pos=True)
 
         return item

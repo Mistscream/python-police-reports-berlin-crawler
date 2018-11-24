@@ -8,8 +8,8 @@ scrapy = "*"
 pymongo = "*"
 "pypiwin32" = {version = "*", sys_platform = "== 'win32'"}
 shub = "*"
-pyfunctional = "*"
-spacy = "*"
+toolz = "*"
+spacy-german-preprocess = "*"
 
 [dev-packages]
 
