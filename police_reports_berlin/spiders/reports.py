@@ -45,7 +45,8 @@ class ReportsSpider(scrapy.Spider):
         timestamp = response.meta['timestamp']
         timestamp = timestamp.replace('Uhr', '').strip()
         timestamp = datetime.strptime(timestamp, '%d.%m.%Y %H:%M')
-        category = response.meta['category'].replace(' - ', '-').replace(' -', '-').replace('- ', '-').strip()
+        category = response.meta['category'] if response.meta['category'] else ''
+        category = category.replace(' - ', '-').replace(' -', '-').replace('- ', '-').strip()
 
         title = response.css('.html5-header > .title::text').extract_first()
 
