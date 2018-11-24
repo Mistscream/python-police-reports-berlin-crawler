@@ -4,6 +4,7 @@ from datetime import datetime
 
 import scrapy
 from toolz.curried import pipe, map, filter
+
 from police_reports_berlin.items import PoliceReportBerlinItem
 
 logger = logging.getLogger()
@@ -44,11 +45,11 @@ class ReportsSpider(scrapy.Spider):
         timestamp = response.meta['timestamp']
         timestamp = timestamp.replace('Uhr', '').strip()
         timestamp = datetime.strptime(timestamp, '%d.%m.%Y %H:%M')
-        category = response.meta['category']
+        category = response.meta['category'].replace(' - ', '-').replace(' -', '-').replace('- ', '-').strip()
 
         title = response.css('.html5-header > .title::text').extract_first()
 
-        snippets = pipe(
+        text = pipe(
             response.css(
                 '.column-content > .article > .body .polizeimeldung::text,' +
                 '.column-content > .article > .body p::text,' +
@@ -59,10 +60,9 @@ class ReportsSpider(scrapy.Spider):
             map(lambda snippet: snippet.strip()),
             filter(None),
 
-            list
+            list,
+            '. '.join
         )
-
-        text = '. '.join(snippets)
 
         report = PoliceReportBerlinItem(
             category=category,
