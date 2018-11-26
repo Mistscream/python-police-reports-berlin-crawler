@@ -29,17 +29,18 @@ SCRAPY_POLICE_REPORTS_CRAWLER_MONGO_DROP_COLLECTION = bool(
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'police_reports_berlin (+http://www.yourdomain.com)'
+USER_AGENT = 'Polizeiberichtscrawler der Studentengruppe Semantische Suche (+https://www.htw-berlin.de/)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 16
+CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 0.25
+DOWNLOAD_DELAY = 2
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
