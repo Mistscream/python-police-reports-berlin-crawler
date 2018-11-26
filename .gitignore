@@ -2,3 +2,4 @@
 .env
 build
 project.egg-info
+settings.py
