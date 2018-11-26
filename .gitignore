@@ -3,3 +3,5 @@
 build
 project.egg-info
 settings.py
+*.pyc
+__pycache__
