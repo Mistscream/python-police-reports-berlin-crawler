@@ -3,7 +3,10 @@ import logging
 from datetime import datetime
 
 import scrapy
+from scrapy.selector import Selector
 from toolz.curried import pipe, map, filter
+import w3lib.html
+import re
 
 from police_reports_berlin.items import PoliceReportBerlinItem
 
@@ -42,27 +45,43 @@ class ReportsSpider(scrapy.Spider):
             yield scrapy.Request(url=next_page_url, callback=self.parse_archive)
 
     def parse_report(self, response):
-        timestamp = response.meta['timestamp']
-        timestamp = timestamp.replace('Uhr', '').strip()
-        timestamp = datetime.strptime(timestamp, '%d.%m.%Y %H:%M')
-        category = response.meta['category'] if response.meta['category'] else ''
-        category = category.replace(' - ', '-').replace(' -', '-').replace('- ', '-').strip()
+        timestamp = response.meta['timestamp'] if 'timestamp' in response.meta.keys() else None
+        timestamp = timestamp.replace('Uhr', '').strip() if timestamp else None
+        timestamp = datetime.strptime(timestamp, '%d.%m.%Y %H:%M') if timestamp else ''
+        category = response.meta['category'] if 'category' in response.meta.keys() else ''
+        category = category.replace(' - ', '-').replace(' -', '-').replace('- ', '-').strip() if category else ''
 
         title = response.css('.html5-header > .title::text').extract_first()
 
-        text = pipe(
-            response.css(
-                '.column-content > .article > .body .polizeimeldung::text,' +
-                '.column-content > .article > .body p::text,' +
-                '.column-content > .article > .body strong::text'
-            ).extract(),
+        text1 = re.sub(
+            ' +', ' ',
+            pipe(
+                response.css(
+                    '.column-content > .article > .body span::text,' +
+                    '.column-content > .article > .body p::text'
+                ).extract(),
+                map(lambda snippet: snippet.replace('\n', ' ')),
+                filter(lambda snippet: snippet.replace('\n', '').strip() != ''),
 
-            map(lambda snippet: snippet.replace('\n', '')),
-            map(lambda snippet: snippet.strip()),
-            filter(None),
+                list,
+                ''.join
+            ).strip()
+        )
 
-            list,
-            '. '.join
+        text2 = re.sub(
+            ' +', ' ',
+            pipe(
+                response.css(
+                    '.column-content > .article > .body'
+                ).extract(),
+                map(lambda tag: w3lib.html.remove_tags(tag, keep=('div', 'p'))),
+                map(lambda tag: w3lib.html.replace_tags(tag, ' ')),
+                map(lambda snippet: snippet.replace('\n', ' ')),
+                filter(lambda snippet: snippet.replace('\n', '').strip() != ''),
+
+                list,
+                ''.join
+            ).strip()
         )
 
         report = PoliceReportBerlinItem(
@@ -70,7 +89,8 @@ class ReportsSpider(scrapy.Spider):
             timestamp=timestamp,
             title=title,
             url=response.url,
-            text=text
+            text1=text1,
+            text2=text2
         )
 
         yield report
